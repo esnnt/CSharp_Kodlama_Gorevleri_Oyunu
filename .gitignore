@@ -1,0 +1,59 @@
+# Unity tarafından oluşturulan klasörler
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# MemoryCaptures Unity versiyonuna bağlı olarak değişebilir
+[Mm]emoryCaptures/
+
+# Asset meta verileri hariç tutulmalı
+!/[Aa]ssets/**/*.meta
+
+# Unity3D veri dosyaları
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity3D build içe aktarma
+*.unitypackage.meta
+
+# Crashlytics özelleştirmelerini hariç tut
+crashlytics-build.properties
+
+# Packed Addressables
+[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Temporary auto-generated Android Assets
+[Aa]ssets/[Ss]treamingAssets/aa.meta
+[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Visual Studio / MonoDevelop ile ilgili dosyalar
+.vs/
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# macOS ile ilgili dosyalar
+.DS_Store
+*.swp
+*.Spotlight-V100
+*.Trashes
+Icon?
+ehthumbs.db
+[Tt]humbs.db
