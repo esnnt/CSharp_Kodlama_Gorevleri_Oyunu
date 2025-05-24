@@ -1,38 +1,92 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;   //Text için
+using TMPro;
+using System.Collections;
 
-
-public class BilgisayarEtilesim : MonoBehaviour
+public class bilgisayarEtkilesim : MonoBehaviour
 {
+    [Header("F Tuþu - Bilgisayar Etkileþimi")]
+    public TextMeshProUGUI fYazisi;
     private bool bilgisayarYakininda = false;
-    public TextMeshProUGUI fYazisi; //texti kullanabilmek için
 
-    private void Start()
+    [Header("Scene Kontrolü")]
+    public string bilgisayarSceneName = "bilgisayarEkrani"; // Bilgisayar scene adý
+    public string anaSceneName = "SampleScene"; // Ana scene adý
+    private bool bilgisayardaMi = false;
+
+    [Header("E Tuþu - Uyuma Etkileþimi")]
+    public TextMeshProUGUI eYazisi;
+    public TextMeshProUGUI uykuDurumuYazisi;
+    public energybar enerjiBar;
+    private bool yataktaMi = false;
+    private bool uyuyor = false;
+    private Coroutine uyumaCoroutine;
+
+    void Start()
     {
-        if (fYazisi != null)
-            fYazisi.gameObject.SetActive(false); //yazýyý oyun baþladýðý zaman gizli tutuyor/pasif yapýyor(setactive kontrolü)
-    }
+        // UI elementlerini baþlangýçta kapat
+        if (fYazisi != null) fYazisi.gameObject.SetActive(false);
+        if (eYazisi != null) eYazisi.gameObject.SetActive(false);
+        if (uykuDurumuYazisi != null) uykuDurumuYazisi.gameObject.SetActive(false);
 
+        // Enerji bar referansýný bul
+        if (enerjiBar == null)
+            enerjiBar = FindObjectOfType<energybar>();
+    }
 
     void Update()
     {
-       
-        if (bilgisayarYakininda && Input.GetKeyDown(KeyCode.F)) //bilgisayýn yanýndaysa ve f ye basýldýysa diðer sahneye geçiþ saðlar
+        // Bilgisayar etkileþimi
+        if (bilgisayarYakininda && Input.GetKeyDown(KeyCode.F) && !bilgisayardaMi)
         {
-            SceneManager.LoadScene("bilgisayarEkrani"); 
+            // Bilgisayar scene'ini yükle
+            SceneManager.LoadScene(bilgisayarSceneName);
+        }
+
+        // Not: ESC ile çýkýþ bilgisayar scene'inde olacak
+
+        // Uyuma Etkileþimi
+        if (yataktaMi && Input.GetKeyDown(KeyCode.E) && !uyuyor)
+        {
+            if (enerjiBar != null)
+            {
+                uyuyor = true;
+                if (uykuDurumuYazisi != null)
+                {
+                    uykuDurumuYazisi.text = "Uyuyor...";
+                    uykuDurumuYazisi.gameObject.SetActive(true);
+                }
+
+                uyumaCoroutine = StartCoroutine(enerjiBar.UyumaEnerjisiArtisi(() =>
+                {
+                    uyuyor = false;
+                    if (uykuDurumuYazisi != null)
+                        uykuDurumuYazisi.gameObject.SetActive(false);
+                }));
+            }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("bilgisayar")) //bilgisayarýn yanýna geldiyse f ye basabilirsin mesajý veriyor
+        if (other.CompareTag("bilgisayar"))
         {
             bilgisayarYakininda = true;
-            Debug.Log("Bilgisayara yaklaþtýn. F'ye basabilirsin.");
-
             if (fYazisi != null)
-                fYazisi.gameObject.SetActive(true);  //bilgisayarýn yanýna geldiðinde yazýyý görünür yap
+                fYazisi.gameObject.SetActive(true);
+        }
+
+        if (other.CompareTag("yatak"))
+        {
+            yataktaMi = true;
+            if (eYazisi != null)
+                eYazisi.gameObject.SetActive(true);
+
+            if (!uyuyor && uykuDurumuYazisi != null)
+            {
+                uykuDurumuYazisi.text = "Uyumak için E'ye bas";
+                uykuDurumuYazisi.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -40,11 +94,27 @@ public class BilgisayarEtilesim : MonoBehaviour
     {
         if (other.CompareTag("bilgisayar"))
         {
-            bilgisayarYakininda = false; //bilgisayarýn yanýnda deðilsen uzaklaþtýn uyarýsý veiriyor
-            Debug.Log("Bilgisayardan uzaklaþtýn.");
-
+            bilgisayarYakininda = false;
             if (fYazisi != null)
-                fYazisi.gameObject.SetActive(false); //bilgisayardan uzaklaþtýðýnda yazýyý gizle
+                fYazisi.gameObject.SetActive(false);
+        }
+
+        if (other.CompareTag("yatak"))
+        {
+            yataktaMi = false;
+            uyuyor = false;
+
+            if (eYazisi != null)
+                eYazisi.gameObject.SetActive(false);
+            if (uykuDurumuYazisi != null)
+                uykuDurumuYazisi.gameObject.SetActive(false);
+
+            // Uyuma coroutine'ini durdur
+            if (uyumaCoroutine != null)
+            {
+                StopCoroutine(uyumaCoroutine);
+                uyumaCoroutine = null;
+            }
         }
     }
 }

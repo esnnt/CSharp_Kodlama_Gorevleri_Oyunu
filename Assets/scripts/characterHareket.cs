@@ -1,44 +1,52 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class characterHareket : MonoBehaviour
 {
-    public float speed = 3f; //karakter hýzý
-    public Rigidbody2D rb; //karakterin fiziksel hareketi için gereklidir
-    public Animator animator; //karakterin animasyonlarýný(sað,sol,yukarý,aþaðý yürüme anmsyonlarý) kontrol etmek için gerklidir
+    public float speed = 3f;
+    public Rigidbody2D rb;
+    public Animator animator;
 
-    Vector2 movement; ///karakter yönünü tutar
-    private void Start()
+    Vector2 movement;
+
+    void Start()
     {
-        rb = GetComponent<Rigidbody2D>(); //karakterin üzerindeki bileþenleri scripte tanýtýyoruz
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-    }
+        // Maria'nýn pozisyonunu sahne geçiþi için ayarla
+        if (SceneTransitionManager.Instance != null)
+        {
+            transform.position = SceneTransitionManager.Instance.GetSpawnPosition();
+        }
 
+        Debug.Log("Maria'nýn hareket scripti baþlatýldý.");
+    }
 
     void Update()
     {
+        // Yön bilgisi al
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
 
-       // Debug.Log("Input X: " + Input.GetAxisRaw("Horizontal") + " | Y: " + Input.GetAxisRaw("Vertical")); //yatay ve dikey konumu konsola yazdýrýr
-
-        
-        movement.x = Input.GetAxisRaw("Horizontal");//yatay giriþleri (a,d veya sað,sol yön tuþlarý) alýr
-        movement.y = Input.GetAxisRaw("Vertical");  //dikey giriþleri (w,s veya yukarý,aþaðý yön tuþlarý) alýr
-
-       // Animator'a verileri gönder
-        animator.SetFloat("moveX", movement.x); //karakterin baktýðý yöne göre animasyonu oynatýr
+        // Animasyonlarý kontrol et
+        animator.SetFloat("moveX", movement.x);
         animator.SetFloat("moveY", movement.y);
-        animator.SetFloat("speed", movement.sqrMagnitude); //hareket þiddeti
-
-
+        animator.SetFloat("speed", movement.sqrMagnitude);
     }
 
     void FixedUpdate()
     {
-        // Hareket ettir
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);//karakterin hareketi
-        Debug.Log("Karakter pozisyonu: " + rb.position); 
+        // Maria'nýn fiziksel hareketini yap
+        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+    }
 
+    // Sahne geçiþi öncesinde pozisyonu kaydet
+    private void OnDestroy()
+    {
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.SetSpawnPosition(transform.position);
+        }
     }
 }

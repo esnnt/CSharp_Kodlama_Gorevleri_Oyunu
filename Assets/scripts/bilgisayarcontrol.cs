@@ -5,24 +5,35 @@ using UnityEngine;
 
 public class bilgisayarcontrol : MonoBehaviour
 {
+    [Header("Bilgisayar Panel Kontrolü")]
     public GameObject bilgisayarPanel;  // Canvas2 altýndaki Panel objesi
-
+    
+    void Start()
+    {
+        // Panel baþlangýçta kapalý olsun
+        if (bilgisayarPanel != null)
+            bilgisayarPanel.SetActive(false);
+    }
+    
     public void Kapat()
     {
-        bilgisayarPanel.SetActive(false);
+        if (bilgisayarPanel != null)
+            bilgisayarPanel.SetActive(false);
     }
-
+    
     public void Ac()
     {
-        bilgisayarPanel.SetActive(true);
+        if (bilgisayarPanel != null)
+            bilgisayarPanel.SetActive(true);
     }
+    
     public void ClearAllInputs()
     {
         TMP_InputField[] inputs = FindObjectsOfType<TMP_InputField>();
-
         foreach (TMP_InputField input in inputs)
         {
-            input.text = "";
+            if (input != null)
+                input.text = "";
         }
     }
 }
