@@ -14,6 +14,7 @@ public class KodKontrol : MonoBehaviour
         string kod = kodAlani.text.ToLower();
         int aktifIndex = gorevYonetici.GetAktifGorevIndex();
 
+        
         switch (aktifIndex)
         {
             case 0:
