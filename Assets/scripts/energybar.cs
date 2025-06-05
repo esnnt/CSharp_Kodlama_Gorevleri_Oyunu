@@ -15,34 +15,44 @@ public class energybar : MonoBehaviour
     public float kararmaBaslangicEnerji = 35f;
     public float maxKararmaAlfa = 0.8f;
 
+    // Karartma için yeni değişkenler
+    private float currentOpacity = 0f;
+    public float darknessIncreaseAmount = 3f; // Her tuşta artacak kararma miktarı
+
+
     void Start()
     {
-        mevcutEnerji = PlayerPrefs.GetFloat("mevcutEnerji", maxEnerji);
-        BarGuncelle();
 
+        float savedEnergy = PlayerPrefs.GetFloat("mevcutEnerji", maxEnerji);
+        mevcutEnerji = savedEnergy;
+        currentOpacity = PlayerPrefs.GetFloat("currentOpacity", 0f);
+        BarGuncelle();
         if (karartmaImage != null)
         {
-            Color renk = karartmaImage.color;
-            renk.a = 0f;          // Karartmayı görünmez yap başlangıçta
-            karartmaImage.color = renk;
+            SetOpacity(currentOpacity);
         }
     }
-
     void Update()
     {
+        // Her sahnede bar güncellemesini kontrol et
+        BarGuncelle();
+
+        // Sadece bilgisayar ekranında enerji azalt
         if (SceneManager.GetActiveScene().name == "bilgisayarEkrani")
         {
             if (Input.anyKeyDown && !Input.GetMouseButtonDown(0) && !Input.GetMouseButtonDown(1) && !Input.GetMouseButtonDown(2))
             {
                 mevcutEnerji -= enerjiAzalmaMiktari;
                 if (mevcutEnerji < 0) mevcutEnerji = 0;
-
                 PlayerPrefs.SetFloat("mevcutEnerji", mevcutEnerji);
-                BarGuncelle();
+
+                // Enerji 75'in altındaysa karartmayı artır
+                if (mevcutEnerji < 25f)
+                {
+                    IncreaseDarkness(darknessIncreaseAmount);
+                }
             }
         }
-
-        KarartmayiGuncelle();  // Her karede karartmayı güncelle
     }
 
     void BarGuncelle()
@@ -51,21 +61,27 @@ public class energybar : MonoBehaviour
             enerjiBarFill.fillAmount = mevcutEnerji / maxEnerji;
     }
 
-    void KarartmayiGuncelle()
+    // Karartma fonksiyonları (EnergyDarkness'tan alındı)
+    void IncreaseDarkness(float amount)
     {
-        if (karartmaImage == null) return;
+        if (currentOpacity >= maxKararmaAlfa) return;
+        currentOpacity += amount;
+        currentOpacity = Mathf.Clamp(currentOpacity, 0f, maxKararmaAlfa);
 
-        float hedefAlfa = 0f;
+        // Opacity'yi kaydet
+        PlayerPrefs.SetFloat("currentOpacity", currentOpacity);
 
-        if (mevcutEnerji < kararmaBaslangicEnerji)
+        SetOpacity(currentOpacity);
+    }
+
+    void SetOpacity(float opacity)
+    {
+        if (karartmaImage != null)
         {
-            float oran = 1f - (mevcutEnerji / kararmaBaslangicEnerji);
-            hedefAlfa = Mathf.Lerp(0f, maxKararmaAlfa, oran);
+            Color c = karartmaImage.color;
+            c.a = opacity;
+            karartmaImage.color = c;
         }
-
-        Color renk = karartmaImage.color;
-        renk.a = Mathf.Lerp(renk.a, hedefAlfa, Time.deltaTime * 5f);  // Yumuşak geçiş
-        karartmaImage.color = renk;
     }
 
     public IEnumerator UyumaEnerjisiArtisi(System.Action uyumaBittiCallback)
@@ -74,13 +90,20 @@ public class energybar : MonoBehaviour
         {
             mevcutEnerji += 1f;
             if (mevcutEnerji > maxEnerji) mevcutEnerji = maxEnerji;
-
             PlayerPrefs.SetFloat("mevcutEnerji", mevcutEnerji);
             BarGuncelle();
 
+            // Enerji 75'e ulaştığında karartmayı temizle
+            if (mevcutEnerji >= 25f && currentOpacity > 0f)
+            {
+                currentOpacity = 0f;
+                PlayerPrefs.SetFloat("currentOpacity", currentOpacity);
+                SetOpacity(currentOpacity);
+            }
+
+
             yield return new WaitForSeconds(0.5f);
         }
-
         uyumaBittiCallback?.Invoke();
     }
 }

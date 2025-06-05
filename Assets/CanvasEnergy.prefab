@@ -382,4 +382,6 @@ MonoBehaviour:
   mevcutEnerji: 100
   enerjiBarFill: {fileID: 1107481364907542837}
   enerjiAzalmaMiktari: 2
-  ekranKarartma: {fileID: 0}
+  karartmaImage: {fileID: 0}
+  kararmaBaslangicEnerji: 35
+  maxKararmaAlfa: 0.8

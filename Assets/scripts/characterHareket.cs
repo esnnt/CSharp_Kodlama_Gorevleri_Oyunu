@@ -4,9 +4,9 @@ using UnityEngine;
 public class characterHareket : MonoBehaviour
 {
     public float speed = 3f;
+    public float sprintMultiplier = 1.7f; // Koþma hýz çarpaný
     public Rigidbody2D rb;
     public Animator animator;
-
     Vector2 movement;
 
     void Start()
@@ -19,7 +19,6 @@ public class characterHareket : MonoBehaviour
         {
             transform.position = SceneTransitionManager.Instance.GetSpawnPosition();
         }
-
         Debug.Log("Maria'nýn hareket scripti baþlatýldý.");
     }
 
@@ -37,8 +36,17 @@ public class characterHareket : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Mevcut hýzý hesapla
+        float currentSpeed = speed;
+
+        // Shift basýlýysa hýzý arttýr
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            currentSpeed *= sprintMultiplier;
+        }
+
         // Maria'nýn fiziksel hareketini yap
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + movement * currentSpeed * Time.fixedDeltaTime);
     }
 
     // Sahne geçiþi öncesinde pozisyonu kaydet
