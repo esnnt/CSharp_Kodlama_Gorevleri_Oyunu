@@ -6,6 +6,7 @@ TagManager:
   tags:
   - bilgisayar
   - yatak
+  - canta
   layers:
   - Default
   - TransparentFX
