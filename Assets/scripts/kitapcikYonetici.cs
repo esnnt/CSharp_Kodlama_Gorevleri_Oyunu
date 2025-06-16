@@ -7,7 +7,7 @@ public class kitapcikYonetici : MonoBehaviour
     public class ButonTextPair
     {
         public Button buton;
-        public GameObject textIcerik; // Ýçerik text'ini sürükle (textcýktýicerik, textdegiskenicerik vs.)
+        public GameObject textIcerik; 
     }
 
     [Header("Buton ve Ýçerik Text Çiftleri")]

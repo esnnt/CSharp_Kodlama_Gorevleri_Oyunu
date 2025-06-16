@@ -33,6 +33,21 @@ public class energybar : MonoBehaviour
     // Her tuşa basıldığında karartmanın ne kadar artacağı (opacity olarak)
     public float darknessIncreaseAmount = 2f;  // Bu değeri fazla büyük vermek opacity'yi anında 1 yapabilir.
 
+    [Header("Canvas Message Ayarları")]
+    // CanvasMessage içindeki ilk görsel (Inspector'dan atanacak)
+    public GameObject imageMessage1;
+
+    [Header("Animasyon Ayarları")]
+    // Mesajın animasyon süreleri
+    public float fadeInSuresi = 1f;        // Mesajın gelirken geçeceği süre
+    public float goruntulenmeSuresi = 7f;  // Mesajın tam görünür kalacağı süre
+    public float fadeOutSuresi = 2f;       // Mesajın kaybolurken geçeceği süre
+    public float hareketoMesafesi = 100f;  // Aşağıdan yukarı hareket mesafesi
+
+    // Mesaj animasyon durumları
+    private bool mesajGosteriliyorMu = false;
+    private Coroutine mesajAnimasyonCoroutine;
+
     void Start()
     {
         // Daha önce kaydedilmiş mevcut enerji varsa onu al, yoksa maxEnerji ile başla
@@ -50,6 +65,15 @@ public class energybar : MonoBehaviour
         {
             SetOpacity(currentOpacity);
         }
+
+        // Mesaj objesini başlangıçta gizle
+        if (imageMessage1 != null)
+        {
+            imageMessage1.SetActive(false);
+        }
+
+        // Başlangıçta enerji durumuna göre mesaj görünürlüğünü ayarla
+        MessageGorünürlükKontrol();
     }
 
     void Update()
@@ -77,6 +101,9 @@ public class energybar : MonoBehaviour
                 {
                     IncreaseDarkness(darknessIncreaseAmount);
                 }
+
+                // Mesaj görünürlüğünü kontrol et
+                MessageGorünürlükKontrol();
             }
         }
     }
@@ -118,6 +145,114 @@ public class energybar : MonoBehaviour
         }
     }
 
+    // Mesaj görünürlüğünü kontrol eden fonksiyon
+    void MessageGorünürlükKontrol()
+    {
+        if (imageMessage1 != null)
+        {
+            // Enerji 25'in altındaysa ve mesaj henüz gösterilmiyorsa
+            if (mevcutEnerji < 25f && !mesajGosteriliyorMu)
+            {
+                // Eğer zaten bir animasyon coroutine çalışıyorsa durdur
+                if (mesajAnimasyonCoroutine != null)
+                {
+                    StopCoroutine(mesajAnimasyonCoroutine);
+                }
+
+                // Mesaj animasyonunu başlat
+                mesajAnimasyonCoroutine = StartCoroutine(MesajAnimasyonu());
+            }
+            // Enerji 25'in üstündeyse ve mesaj gösteriliyorsa hemen gizle
+            else if (mevcutEnerji >= 25f && mesajGosteriliyorMu)
+            {
+                // Animasyon coroutine'ini durdur
+                if (mesajAnimasyonCoroutine != null)
+                {
+                    StopCoroutine(mesajAnimasyonCoroutine);
+                }
+
+                // Mesajı hemen gizle
+                mesajGosteriliyorMu = false;
+                imageMessage1.SetActive(false);
+            }
+        }
+    }
+
+    // Mesaj animasyonunu yöneten coroutine
+    IEnumerator MesajAnimasyonu()
+    {
+        mesajGosteriliyorMu = true;
+
+        // Mesajı aktif et
+        imageMessage1.SetActive(true);
+
+        // Mesajın RectTransform ve CanvasGroup bileşenlerini al
+        RectTransform rectTransform = imageMessage1.GetComponent<RectTransform>();
+        CanvasGroup canvasGroup = imageMessage1.GetComponent<CanvasGroup>();
+
+        // Eğer CanvasGroup yoksa ekle
+        if (canvasGroup == null)
+        {
+            canvasGroup = imageMessage1.AddComponent<CanvasGroup>();
+        }
+
+        // Başlangıç pozisyonunu kaydet
+        Vector3 baslangicPozisyon = rectTransform.anchoredPosition;
+        Vector3 animasyonBaslangicPozisyon = new Vector3(baslangicPozisyon.x, baslangicPozisyon.y - hareketoMesafesi, baslangicPozisyon.z);
+
+        // Başlangıçta görünmez ve aşağıda konumlandır
+        canvasGroup.alpha = 0f;
+        rectTransform.anchoredPosition = animasyonBaslangicPozisyon;
+
+        // FADE IN ve YUKARI HAREKET ANİMASYONU
+        float elapsedTime = 0f;
+        while (elapsedTime < fadeInSuresi)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / fadeInSuresi;
+
+            // Smooth geçiş için easing
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            // Alpha ve pozisyon interpolasyonu
+            canvasGroup.alpha = t;
+            rectTransform.anchoredPosition = Vector3.Lerp(animasyonBaslangicPozisyon, baslangicPozisyon, t);
+
+            yield return null;
+        }
+
+        // Tam pozisyonda ve tam görünür olduğundan emin ol
+        canvasGroup.alpha = 1f;
+        rectTransform.anchoredPosition = baslangicPozisyon;
+
+        // Tam görünür olarak bekle
+        yield return new WaitForSeconds(goruntulenmeSuresi);
+
+        // FADE OUT ANİMASYONU
+        elapsedTime = 0f;
+        while (elapsedTime < fadeOutSuresi)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / fadeOutSuresi;
+
+            // Smooth geçiş için easing
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            // Alpha interpolasyonu (1'den 0'a)
+            canvasGroup.alpha = 1f - t;
+
+            yield return null;
+        }
+
+        // Tamamen görünmez yap ve deaktif et
+        canvasGroup.alpha = 0f;
+        imageMessage1.SetActive(false);
+        mesajGosteriliyorMu = false;
+
+        // Coroutine referansını temizle
+        mesajAnimasyonCoroutine = null;
+    }
+
     // Karartmayı kontrol eden ve gerekirse temizleyen public fonksiyon
     public void KarartmaKontrolEt()
     {
@@ -128,6 +263,9 @@ public class energybar : MonoBehaviour
             PlayerPrefs.SetFloat("currentOpacity", currentOpacity);
             SetOpacity(currentOpacity);
         }
+
+        // Mesaj görünürlüğünü de kontrol et
+        MessageGorünürlükKontrol();
     }
 
     // Oyuncu uyurken enerjisini yavaş yavaş artıran coroutine
@@ -150,6 +288,9 @@ public class energybar : MonoBehaviour
 
             // Karartma kontrolü yap
             KarartmaKontrolEt();
+
+            // Mesaj görünürlüğünü kontrol et
+            MessageGorünürlükKontrol();
 
             // Yarım saniye bekle, sonra tekrar devam et
             yield return new WaitForSeconds(0.5f);
