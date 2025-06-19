@@ -12,25 +12,17 @@ public class GorevYonetici : MonoBehaviour
     [Header("Mesaj Ayarlarý")]
     public float mesajSuresi = 3f;       // Yanlýþ kod mesajýnýn gösterileceði süre (saniye)
 
-    private int aktifGorevIndex = 0;     // Þu an aktif olan görevin indeksi
+    private int aktifGorevIndex = 0;     // Þu an aktif olan görevin indeksi (her zaman 0'dan baþlar)
     private Color varsayilanRenk;        // Görev metninin orijinal rengi (baþlangýçta alýnýr)
     private Coroutine mesajCoroutine;    // Þu anda çalýþan mesaj gösterme coroutine'i (varsa)
 
-    // Baþlangýçta görev metninin orijinal rengini alýr ve kaydedilmiþ görevi yükler
+    // Baþlangýçta görev metninin orijinal rengini alýr ve her zaman ilk görevden baþlar
     void Start()
     {
         varsayilanRenk = gorevText.color;
 
-        // Kaydedilmiþ görev indeksini yükle (varsayýlan olarak 0)
-        aktifGorevIndex = PlayerPrefs.GetInt("AktifGorevIndex", 0);
-
-        // Eðer görev indeksi görev listesi uzunluðundan büyükse 0'a sýfýrla
-        if (aktifGorevIndex >= gorevListesi.Count)
-        {
-            aktifGorevIndex = 0;
-            PlayerPrefs.SetInt("AktifGorevIndex", aktifGorevIndex);
-            PlayerPrefs.Save();
-        }
+        // Her oyun baþlangýcýnda ilk görevden baþla
+        aktifGorevIndex = 0;
 
         GoreviGoster();
     }
@@ -94,10 +86,6 @@ public class GorevYonetici : MonoBehaviour
 
         aktifGorevIndex++;  // Bir sonraki göreve geç
 
-        // Görev indeksini PlayerPrefs ile kaydet
-        PlayerPrefs.SetInt("AktifGorevIndex", aktifGorevIndex);
-        PlayerPrefs.Save();
-
         if (aktifGorevIndex < gorevListesi.Count)
         {
             // Eðer görev varsa göster
@@ -142,12 +130,10 @@ public class GorevYonetici : MonoBehaviour
         return "Bilinmeyen Görev";  // Eðer indeks geçerli deðilse
     }
 
-    // Görevleri sýfýrlama fonksiyonu (test için)
+    // Görevleri sýfýrlama fonksiyonu (artýk sadece oyun sýrasýnda kullaným için)
     public void GorevleriSifirla()
     {
         aktifGorevIndex = 0;
-        PlayerPrefs.SetInt("AktifGorevIndex", 0);
-        PlayerPrefs.Save();
         GoreviGoster();
         Debug.Log("Görevler sýfýrlandý!");
     }

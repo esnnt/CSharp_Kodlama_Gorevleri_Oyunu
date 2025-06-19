@@ -3515,8 +3515,8 @@ Transform:
   m_GameObject: {fileID: 1231439747}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1277.86, y: -717.64, z: 0}
-  m_LocalScale: {x: 0.24823065, y: 0.2662045, z: 0.75}
+  m_LocalPosition: {x: -1278.06, y: -717.35, z: 0}
+  m_LocalScale: {x: 0.416694, y: 0.4468659, z: 1.2589924}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1935448655}
@@ -3553,7 +3553,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.01178813, y: 3.9701185}
+  m_Offset: {x: -0.01178813, y: 2.066361}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -3564,7 +3564,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.6331754, y: 0.5173466}
+  m_Size: {x: 2.6331754, y: 0.5383539}
   m_EdgeRadius: 0
 --- !u!212 &1231439750
 SpriteRenderer:
@@ -3606,7 +3606,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 0d5d0886e835afb43a344f73469fdacd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -3907,7 +3907,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 11
+  m_SortingOrder: 150
   m_TargetDisplay: 0
 --- !u!224 &1430653132
 RectTransform:
@@ -4632,7 +4632,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -12, y: 331}
+  m_AnchoredPosition: {x: -12, y: 370}
   m_SizeDelta: {x: 754.4507, y: 230.4425}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1646546654
@@ -5222,7 +5222,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!224 &1935448655
 RectTransform:

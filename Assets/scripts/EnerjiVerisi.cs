@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "YeniEnerjiVerisi", menuName = "OyunVerisi/Enerji")]
 public class EnerjiVerisi : ScriptableObject
 {
-    // Karakterin sahip olabileceði maksimum enerji deðeri (örneðin 100)
+    // Karakterin sahip olabileceði maksimum enerji deðeri 
     public float maxEnerji = 100f;
 
     // Karakterin þu anki mevcut enerjisi
