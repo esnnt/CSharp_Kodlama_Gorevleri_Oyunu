@@ -30,8 +30,8 @@ Bu projede Unity'nin standart UI sistemleri ve C# string işleme fonksiyonları 
 
 | Ana Arayüz | Bilgisayar Arayüzü |
 | :---: | :---: |
-| ![Ana Arayüz](c1.png) | ![Bilgisayar](c2.png) |
+| ![Ana Arayüz](Görseller/c1.png) | ![Bilgisayar](Görseller/c2.png) |
 | **Enerji Sistemi** | **Editör Arayüzü** |
-| ![Enerji](c3.png) | ![Editör](c5.png) |
+| ![Enerji](Görseller/c3.png) | ![Editör](Görseller/c5.png) |
 ---
 *Geliştirici: [Esin Tekin]*
