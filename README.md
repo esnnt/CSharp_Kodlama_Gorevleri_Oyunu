@@ -1,6 +1,5 @@
 # C# Kodlama Görevleri Oyunu
 
-![Oyun İçi Kod Editörü Görüntüsü](Gorsel_Linkini_Buraya_Koy.gif)
 
 ## 💻 Proje Hakkında
 Bu proje, oyunculara **Unity içinde gerçek C# kodları yazdırarak** programlama mantığını öğretmeyi amaçlayan interaktif bir simülasyon oyunudur. Klasik eğitim metotlarının aksine, oyuncu oyun içerisindeki görevleri tamamlamak için doğru sözdizimi (syntax) ile kod yazmalıdır.
